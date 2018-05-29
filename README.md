@@ -30,7 +30,7 @@ pip3 install -r requirements.txt
 ***Step 3: Run the script***
 
 ```
-python3 parser.py
+python3 parser.py > output.txt
 ```
 
-PS: You can see the parsed doc on the terminal
+PS: You can see the parsed doc in the output.txt file in the root directory

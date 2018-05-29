@@ -30,9 +30,11 @@ def get_child(root, space = 1):
 
 
 if __name__ == '__main__':
+    
+    filename = 'sample.docx'
+    
     input_base_dir = 'data/input_doc/'
     cache_path = 'cache/cv.zip'
-    filename = 'sample.docx'
     shutil.copy(input_base_dir+filename, cache_path)
     with zipfile.ZipFile(cache_path,"r") as zip_ref:
         zip_ref.extractall("cache/cv")
