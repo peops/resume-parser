@@ -34,3 +34,16 @@ python3 parser.py > output.txt
 ```
 
 PS: You can see the parsed doc in the output.txt file in the root directory
+
+
+## Algorithm
+1. Take the input file - 'data/input_doc/sample.docx'
+2. Copy and rename the file to another directory - 'cache/cv.zip' - using shutil
+3. Unzip the directory to 'cache/cv/' - with zipfile.ZipFile(cache_path,"r") - read about "with" aka context managers
+4. find the relevant document.xml - 'cache/cv/word/document.xml'
+5. Parse this doc - etree.parse
+6. get the root - tree.getroot()
+7. Call the recursive function - get_Child()
+8. if child.text is not None: - ie, child node contains some text (spaces, tabs, letters, numbers, spcl chars etc), then look at the text. If text contains any charater (other than spaces), that text is relevant -  if any(c.isalpha() for c in child.text) is True:
+9. Then print the text 
+10. Whatever happens, find the next child and go ondoing it - step 7
