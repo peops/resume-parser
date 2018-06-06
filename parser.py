@@ -1,7 +1,10 @@
 import os
 import re
+import types
 import shutil
 import zipfile
+import itertools
+import pandas as pd
 from lxml import etree
 
 class Parser():
@@ -29,13 +32,33 @@ class Parser():
             for elem in body:
                 tag = self.clean_tag(str(elem.tag))
                 if tag=='p':
-                    self.process_p(elem)
+                    self.process_p(elem, origin='p')
                 if tag=='tbl':
+                    print('****************************************************************************TABLEBEGIN')
                     self.process_tbl(elem)
+                    print('****************************************************************************TABLEEND')
 
-    def process_p(self, root):
-        print(self.get_p_text(root, space = 1))
-        print("**")
+    def process_p(self, root, origin):
+        p_text = self.get_p_text(root, space = 1)
+        if origin == 'tbl':
+            p_text = self.join_p(p_text)
+        print(p_text)
+
+    def join_p(self, x):
+        if isinstance(x, str):
+            return x
+        elif isinstance(x, list):
+            if len(x)>1:
+                if isinstance(x[0], list):
+                    merge = lambda x: list(itertools.chain.from_iterable(x))
+                    x = merge(x)
+                elif isinstance(x[0], str):
+                    x = ''.join(x)
+                return self.join_p(x)
+            elif len(x) == 1:
+                return self.join_p(x[0])
+            else:
+                return
 
     def get_p_text(self, root, space = 1):
         text = list()
@@ -51,37 +74,72 @@ class Parser():
             else:
                 text.append(_text)
         return text 
-
     def process_tbl(self, root):
-        print('****************************************************************************TABLE')
-        self.find_rows(root)
-
-    def find_rows(self, root):
+        pattern = list()
+        rows = list()
         for row in root:
             tag = self.clean_tag(str(row.tag))
             if tag=='tr':
-                print("****************************************ROW")
-                print(self.process_row(row))
+                n_cells, row = self.process_row(row, count = True)
+                pattern.append(n_cells)
+                rows.append(row)
+        # pattern = [1,6,6,6,6,6]
+        pattern_indices = self.pattern_indices(pattern)
+        # print(pattern_indices)
+        used_rows = list()
+        if len(pattern_indices)>1:
+            for i, _ in enumerate(pattern_indices):
+                if i == len(pattern_indices)-1:
+                    break
+                if pattern_indices[i+1]-pattern_indices[i] > 2:
+                    for x in range(pattern_indices[i], pattern_indices[i+1]):
+                        for cell in rows[x]:
+                            print("************CELL")
+                            self.process_cell(cell)
+                        print("**********************************ROW")
+                        used_rows.append(x)
+                    for index in sorted(used_rows, reverse=True):
+                        del rows[index]
 
-    def process_row(self, root):
-        n_cells = 0
-        for cell in root:
-            n_cells += 1
-            tag = self.clean_tag(str(cell.tag))
-            if tag=='tc':
+        for remaining_row in rows:
+            print("**********************************ROW")
+            for cell in remaining_row:
                 print("************CELL")
                 self.process_cell(cell)
-        return n_cells
+
+        
+    def pattern_indices(self, pattern):
+        index_pattern = [0]
+        if any(len(list(g)) > 2 for k, g in itertools.groupby(pattern)):
+            index = 0
+            for i, (k, g) in enumerate(itertools.groupby(pattern)):
+                temp = list(g)
+                index = index+len(temp)
+                index_pattern.append(index)
+        return index_pattern
+
+    def process_row(self, root, count):
+        n_cells = 0
+        cells = list()
+        for cell in root:
+            tag = self.clean_tag(str(cell.tag))
+            if tag=='tc':
+                n_cells += 1
+                cells.append(cell)
+                if count == False:
+                    print("************CELL")
+                    self.process_cell(cell)
+        return n_cells, cells
 
     def process_cell(self, root):
         for p in root:
             tag = self.clean_tag(str(p.tag))
             if tag=='p':
-                self.process_p(p)
+                self.process_p(p, origin='tbl')
 
 
 if __name__ == '__main__':
-    i = 6    
+    i = 1
     filename = str(i)+'.docx'
     name = filename[:-5]
     print('filename', name)

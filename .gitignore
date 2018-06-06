@@ -6,4 +6,5 @@ __pycache__/
 # Distribution / packaging
 .Python
 cache/
-debugger/sample.xml
+debugger/
+*.docx#
