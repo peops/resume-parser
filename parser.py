@@ -65,6 +65,8 @@ class Parser():
     def get_p_text(self, root):
         text = list()
         for child in root:
+            if self.clean_tag(str(child.tag)) == "align" or self.clean_tag(str(child.tag)) == "posOffset":
+                continue
             if child.text is not None:
                 text.append(child.text)
             if self.clean_tag(str(child.tag)) == "tab":
