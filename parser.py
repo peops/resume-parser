@@ -1,11 +1,10 @@
 import os
 import re
-import types
 import shutil
 import zipfile
 import itertools
-import pandas as pd
 from lxml import etree
+from xml.dom import minidom
 
 class Parser():
     def __init__(self, root):
@@ -32,16 +31,15 @@ class Parser():
             for elem in body:
                 tag = self.clean_tag(str(elem.tag))
                 if tag=='p':
-                    self.process_p(elem, origin='p')
+                    self.process_p(elem)
                 if tag=='tbl':
                     print('****************************************************************************TABLEBEGIN')
                     self.process_tbl(elem)
                     print('****************************************************************************TABLEEND')
 
-    def process_p(self, root, origin):
+    def process_p(self, root):
         p_text = self.get_p_text(root, space = 1)
-        if origin == 'tbl':
-            p_text = self.join_p(p_text)
+        p_text = self.join_p(p_text)
         print(p_text)
 
     def join_p(self, x):
@@ -64,16 +62,16 @@ class Parser():
         text = list()
         for child in root:
             if child.text is not None:
-                if any(c.isalpha() or c.isdigit() for c in child.text) is False:
-                    pass
-                else:
-                    text.append(child.text)
+                text.append(child.text)
+            if self.clean_tag(str(child.tag)) == "tab":
+                text.append(" ")
             _text = self.get_p_text(child, space = space + 1)
             if len(_text) == 0:
                 pass
             else:
                 text.append(_text)
-        return text 
+        return text
+
     def process_tbl(self, root):
         pattern = list()
         rows = list()
@@ -107,7 +105,6 @@ class Parser():
                 print("************CELL")
                 self.process_cell(cell)
 
-        
     def pattern_indices(self, pattern):
         index_pattern = [0]
         if any(len(list(g)) > 2 for k, g in itertools.groupby(pattern)):
@@ -135,29 +132,43 @@ class Parser():
         for p in root:
             tag = self.clean_tag(str(p.tag))
             if tag=='p':
-                self.process_p(p, origin='tbl')
+                self.process_p(p)
 
 
 if __name__ == '__main__':
-    i = 1
+    i = 10
     filename = str(i)+'.docx'
-    name = filename[:-5]
-    print('filename', name)
+    
+    # Validate input file
+    ext = os.path.splitext(filename)[-1].lower()
+    if ext != ".docx":
+        exit()
+
+    # Extract file initial name
+    name = os.path.splitext(os.path.basename(filename))[0]
+
+    # input Folder
     input_base_dir = 'data/input_doc/'
+
+    # cache folder 
     cache_path = 'cache/'+name+'.zip'
+
+    # Make temporary directory in cache folder
     shutil.copy(input_base_dir+filename, cache_path)
     with zipfile.ZipFile(cache_path,"r") as zip_ref:
         zip_ref.extractall("cache/"+name)
     if os.path.isfile(cache_path):
         os.remove(cache_path)
 
+    # Locate the xml file to be parsed
     doc_xml_path = 'cache/' + name + '/word/document.xml'
 
+    # Parse the XML
     tree = etree.parse(doc_xml_path)
     root = tree.getroot()
     parser = Parser(root)
     
-    from xml.dom import minidom
+    # Save a pretty printed xml in the debugger directory
     xmlstr = minidom.parseString(etree.tostring(tree)).toprettyxml(indent="   ")
     with open("debugger/sample.xml", "w") as f:
         f.write(xmlstr)

@@ -20,13 +20,13 @@
 - [x] Summary/Personal Bio
 - [x] Objective/Career Objective/Job Required
 
-- [ ] Language
-- [ ] Skills
-- [ ] Coursework
-- [ ] Interests
-- [ ] Srengths
-- [ ] Hobbies
-- [ ] Extra Curricular Activities
+- [x] Language
+- [x] Skills
+- [x] Coursework
+- [x] Interests
+- [x] Srengths
+- [x] Hobbies
+- [x] Extra Curricular Activities
 
 - [ ] Awards/Accomplishments/Honors
 
