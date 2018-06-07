@@ -1,31 +1,37 @@
-- [ ] Accomplishments
-- [ ] Activities
-- [ ] Associations
-- [ ] Awards
+- [x] Name
+- [x] Email
+- [x] Contact No.
+- [x] Address
+- [x] DOB
+- [x] Gender
+- [x] Marital Status
+
+- [x] Qualification
+- [x] Institution
+- [x] Year of Passing
+- [x] CGPA
+
+- [x] Company
+- [x] Duration
+- [x] Location
+- [x] Roles & Responsibilities
+- [x] Designation
+
+- [x] Summary/Personal Bio
+- [x] Objective/Career Objective/Job Required
+
+- [ ] Language
+- [ ] Skills
+- [ ] Coursework
+- [ ] Interests
+- [ ] Srengths
+- [ ] Hobbies
+- [ ] Extra Curricular Activities
+
+- [ ] Awards/Accomplishments/Honors
+
 - [ ] Certification
 - [ ] Conference
-- [ ] Courses
-- [ ] Coursework
-- [ ] Contact
-- [ ] Degree
-- [ ] Education
-- [ ] Experience
-- [ ] Extra Curricular Activities
-- [ ] Hobbies
-- [ ] Honors
-- [ ] Institution
-- [ ] Interests
-- [ ] Language
-- [ ] Leadership
-- [ ] Major
-- [ ] Objective
-- [ ] Organization
-- [ ] Program
 - [ ] Projects
 - [ ] Publication
-- [ ] Qualifications
 - [ ] Research
-- [ ] Skills
-- [ ] Summary
-- [ ] Training
-- [ ] Volunteer

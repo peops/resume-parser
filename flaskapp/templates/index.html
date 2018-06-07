@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Resume Extraction Form</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,700">
+        <link rel="stylesheet" href="{{ url_for('static',filename="assets/bootstrap/css/bootstrap.min.css") }}">
+        <link rel="stylesheet" href="{{ url_for('static',filename="assets/font-awesome/css/font-awesome.min.css") }}">
+        <link rel="stylesheet" href="{{ url_for('static',filename="assets/css/form-elements.css") }}">
+        <link rel="stylesheet" href="{{ url_for('static',filename="assets/css/style.css") }}">
+        <link rel="stylesheet" href="{{ url_for('static',filename="assets/css/media-queries.css") }}">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Favicon and touch icons -->
+        <link rel="shortcut icon" href="{{ url_for('static',filename="assets/ico/favicon.png") }}">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ url_for('static',filename="assets/ico/apple-touch-icon-144-precomposed.png") }}">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ url_for('static',filename="assets/ico/apple-touch-icon-114-precomposed.png") }}">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ url_for('static',filename="assets/ico/apple-touch-icon-72-precomposed.png") }}">
+        <link rel="apple-touch-icon-precomposed" href="url_for('static',filename="assets/ico/apple-touch-icon-57-precomposed.png") }}">
+
+    </head>
+
+    <body>
+        
+        <!-- Top menu -->
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{{ url_for('main') }}">Resume Information Extraction Form</a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="top-navbar-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <span class="li-text">
+                                Follow us: 
+                            </span> 
+                            <span class="li-social">
+                                <a href="http://www.facebook.com/pages/Azmindcom/196582707093191" target="_blank"><i class="fa fa-facebook"></i></a> 
+                                <a href="http://twitter.com/anli_zaimi" target="_blank"><i class="fa fa-twitter"></i></a> 
+                                <a href="https://plus.google.com/101131425868807087570" target="_blank"><i class="fa fa-google-plus"></i></a>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Description -->
+        <!--
+        <div class="description-container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 description-title">
+                        <h2>Resume Information Extraction Form</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 description-text">
+                        <p>
+                            Select options from the dropbox to choose the data that best fits the form field. 
+                        </p>
+                        <div class="divider-1">. . . . . . . . . . . . . . . .</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+        
+        <!-- Multi Step Form -->
+        <div class="msf-container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 msf-title">
+                        <h3>Fill In The Form</h3>
+                        <p>Select options from the dropbox to choose the data that best fits the form field. Please complete the form below to push the cadidate information in the database:</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 msf-form">
+                        
+                        <form role="form" action="" method="post" class="form-inline">
+                            <!-- Basic Information Details--> 
+                            <fieldset>
+                                <h4>Basic Information <span class="step">(Step 1 / 7)</span></h4>
+                                <div class="form-group">
+                                    <label for="name">Name:</label><br>
+                                    <input type="text" name="name" class="name form-control" id="name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">E-mail ID:</label><br>
+                                    <input type="text" name="email" class="email form-control" id="email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact">Contact No:</label><br>
+                                    <input type="text" name="contact" class="contact form-control" id="contact">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">Address:</label><br>
+                                    <input type="text" name="address" class="address form-control" id="address">
+                                </div>
+                                <div class="form-group">
+                                    <label for="birthdate">Date (YYYY/MM/DD):</label><br>
+                                    <input type="text" name="birthdate" class="birthdate form-control" id="birthdate">
+                                </div>
+                                <br>
+                                <div class="radio-buttons-1">
+                                    <p>Gender:</p>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="radio-buttons-1-options" value="radio-buttons-1-option-1"> Female
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="radio-buttons-1-options" value="radio-buttons-1-option-2"> Male
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="radio-buttons-1-options" value="radio-buttons-1-option-3"> Others
+                                    </label>
+                                </div>
+                                <div class="radio-buttons-1">
+                                    <p>Marital Status:</p>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="radio-buttons-1-options" value="radio-buttons-1-option-1"> Unmarried
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="radio-buttons-1-options" value="radio-buttons-1-option-2"> Married
+                                    </label>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
+                            </fieldset>
+                            
+                            <!-- Educational Qualification Details--> 
+                            <fieldset>
+                                <h4>Educational Qualifications<span class="step">(Step 2 / 7)</span></h4>
+                                <!-- Qualification 1 -->
+                                <div class="well well-sm" style="background: rgba(122, 130, 136, 0.2)">
+                                    <div class="form-group">
+                                        <label for="qualification">Qualification:</label><br>
+                                        <input type="text" name="qualification" class="qualification form-control" id="qualification">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="institution">Institution:</label><br>
+                                        <input type="text" name="institution" class="institution form-control" id="institution">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="passingyear">Year of Passing:</label><br>
+                                        <input type="text" name="passingyear" class="passingyear form-control" id="passingyear">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="marks">CGPA/Marks:</label><br>
+                                        <input type="text" name="marks" class="marks form-control" id="marks">
+                                    </div>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
+                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
+                            </fieldset>
+                            
+                            <!-- Previous Experiences --> 
+                            <fieldset>
+                                <h4>Experiences <span class="step">(Step 3 / 7)</span></h4>
+                                <div class="well well-sm" style="background: rgba(122, 130, 136, 0.2)">
+                                    <div class="form-group">
+                                        <label for="company">Comapny:</label><br>
+                                        <input type="text" name="company" class="company form-control" id="company">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="duration">Duration:</label><br>
+                                        <input type="text" name="duration" class="duration form-control" id="duration">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="location">Location:</label><br>
+                                        <input type="text" name="location" class="location form-control" id="location">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Designation">Designation:</label><br>
+                                        <input type="text" name="Designation" class="Designation form-control" id="Designation">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="roles">Roles & Responsibility:</label><br>
+                                        <textarea name="roles" class="roles form-control" id="roles"></textarea>
+                                    </div>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
+                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
+                            </fieldset>
+                            
+                            <fieldset>
+                                <h4>About the Candidate<span class="step">(Step 4 / 7)</span></h4>
+                                <div class="form-group">
+                                    <label for="personalbio">Candidate Persional Bio:</label><br>
+                                    <textarea name="personalbio" class="personalbio form-control" id="personalbio"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="careergoals">Career Goals/Job Requirement:</label><br>
+                                    <textarea name="careergoals" class="careergoals form-control" id="careergoals"></textarea>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
+                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
+                            </fieldset>
+                            
+                            <fieldset>
+                                <h4>Other Information <span class="step">(Step 5 / 7)</span></h4>
+                                <div class="form-group">
+                                    <label for="language">Language:</label><br>
+                                    <input type="text" name="language" class="language form-control" id="language">
+                                </div>
+                                <div class="form-group">
+                                    <label for="skills">Skills:</label><br>
+                                    <input type="text" name="skills" class="skills form-control" id="skills">
+                                </div>
+                                <div class="form-group">
+                                    <label for="coursework">Coursework:</label><br>
+                                    <input type="text" name="coursework" class="coursework form-control" id="coursework">
+                                </div>
+                                <div class="form-group">
+                                    <label for="interests">Interests:</label><br>
+                                    <input type="text" name="interests" class="interests form-control" id="interests">
+                                </div>
+                                <div class="form-group">
+                                    <label for="strengths">Strengths:</label><br>
+                                    <input type="text" name="strengths" class="strengths form-control" id="strengths">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hobbies">Hobbies:</label><br>
+                                    <input type="text" name="hobbies" class="hobbies form-control" id="hobbies">
+                                </div>
+                                <div class="form-group">
+                                    <label for="others">Others:</label><br>
+                                    <input type="text" name="others" class="others form-control" id="others">
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
+                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
+                            </fieldset>
+                            
+                            <fieldset>
+                                <h4>Final Review <span class="step">(Step 6 / 7)</span></h4>
+                                <div class="radio-buttons-1">
+                                    <p>Rate Resume:</p>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="radio-buttons-1-options" value="radio-buttons-1-option-1"> Poor
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="radio-buttons-1-options" value="radio-buttons-1-option-2"> Average
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="radio-buttons-1-options" value="radio-buttons-1-option-3"> Good
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="radio-buttons-1-options" value="radio-buttons-1-option-4"> Excellent
+                                    </label>
+                                </div>
+                                <br>
+                                <div class="checkboxes-1">
+                                    <p>Recommended Profile:</p>
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="checkboxes-1-options" value="checkboxes-1-option-1"> Call Centers
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="checkboxes-1-options" value="checkboxes-1-option-2"> Consultants
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="checkboxes-1-options" value="checkboxes-1-option-3"> Software Engineers
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="checkboxes-1-options" value="checkboxes-1-option-4"> Product Managers
+                                    </label>
+                                </div>
+                                <br>
+                                <div class="selects-1">
+                                    <p>Assign Person:</p>
+                                    <select class="form-control" name="select-1">
+                                        <option value="1">Mr. Vikash Goel</option>
+                                        <option value="2">Ms. Archita</option>
+                                        <option value="3">Ms. Bhavna</option>
+                                    </select>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
+                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
+                            </fieldset>
+                           <fieldset>
+                                <h4>Personal Remarks<span class="step">(Step 7 / 7)</span></h4>
+                                <div class="form-group">
+                                    <label for="remarks">Remarks:</label><br>
+                                    <textarea name="remarks" class="remarks form-control" id="remarks"></textarea>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
+                                <button type="submit" class="btn">Submit</button>
+                            </fieldset> 
+                            
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <!-- Javascript -->
+        <script src="{{ url_for('static',filename="assets/js/jquery-1.11.1.min.js") }}"></script>
+        <script src="{{ url_for('static',filename="assets/bootstrap/js/bootstrap.min.js") }}"></script>
+        <script src="{{ url_for('static',filename="assets/js/jquery.backstretch.min.js") }}"></script>
+        <script src="{{ url_for('static',filename="assets/js/scripts.js") }}"></script>
+        
+        <!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+    </body>
+
+</html>
