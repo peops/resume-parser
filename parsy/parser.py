@@ -34,13 +34,13 @@ class Parser():
                     if self.process_p(elem) is not None:
                         t = " ".join(self.process_p(elem).split())
                         self.master.append([t])
-                        print("*************************************************PARABEGIN")
-                        print(self.process_p(elem))
-                        print("*************************************************PARAEND")
+                        # print("*************************************************PARABEGIN")
+                        # print(self.process_p(elem))
+                        # print("*************************************************PARAEND")
                 if tag=='tbl':
-                    print("*************************************************TABLEBEGIN")
+                    # print("*************************************************TABLEBEGIN")
                     self.process_tbl(elem)
-                    print("*************************************************TABLEEND")
+                    # print("*************************************************TABLEEND")
 
     def process_p(self, root):
         p_text = self.get_p_text(root)
@@ -92,10 +92,10 @@ class Parser():
         for i, (row_len, row) in enumerate(zip(pattern,rows)):
             if row_len == 1:
                 if len(frame) > 0 :
-                    print(frame)
+                    # print(frame)
                     self.master.append(frame)
                 frame = list()
-                print(self.read_row_as_list(row))
+                # print(self.read_row_as_list(row))
                 self.master.append(self.read_row_as_list(row))
             elif row_len  >  1:
                 try:
@@ -106,7 +106,7 @@ class Parser():
                         frame.append(frame_item)
                     else:
                         self.master.append(self.read_row_as_list(row))
-                        print(self.read_row_as_list(row))
+                        # print(self.read_row_as_list(row))
                 except IndexError:
                     if pattern[i] == pattern[i-1]:
                         frame_item = list()
@@ -114,11 +114,11 @@ class Parser():
                             frame_item.append(self.process_cell(cell))
                         frame.append(frame_item)
                     else:
-                        print(self.read_row_as_list(row))
+                        # print(self.read_row_as_list(row))
                         self.master.append(self.read_row_as_list(row))
         if len(frame) > 0 :
             self.master.append(frame)
-            print(frame)
+            # print(frame)
 
     def read_row_as_list(self, row):
         row_data = list() 
