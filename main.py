@@ -1,4 +1,5 @@
 import os
+import json
 import shutil
 import zipfile
 from lxml import etree
@@ -36,10 +37,18 @@ doc_xml_path = 'cache/cv/word/document.xml'
 # Parse the XML
 tree = etree.parse(doc_xml_path)
 root = tree.getroot()
-parser = Parser(root)
-print(parser.master)
 
 # Save a pretty printed xml in the debugger directory
 xmlstr = minidom.parseString(etree.tostring(tree)).toprettyxml(indent="   ")
 with open("debugger/sample.xml", "w") as f:
     f.write(xmlstr)
+
+# Parse file
+parser = Parser(root)
+resume = parser.master
+print(resume)
+
+# Get default resume fields
+with open('data.json') as f:
+    data = json.load(f)
+    
