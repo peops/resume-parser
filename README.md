@@ -30,7 +30,11 @@ pip3 install -r requirements.txt
 ***Step 3: Run the script***
 
 ```
-python3 parser.py
+python3 main.py
 ```
 
 PS: You can see the parsed doc in the terminal
+
+
+*** The frontend is deployed at omnifin.herokuapp.com ***
+This has not yet been linked with the parser in the backend. Stay tuned for updates!
