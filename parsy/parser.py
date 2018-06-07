@@ -1,15 +1,14 @@
-import os
+#!/usr/bin/python3
+
 import re
-import shutil
-import zipfile
 import itertools
 import pandas as pd
-from lxml import etree
-from xml.dom import minidom
+
 
 class Parser():
     def __init__(self, root):
         self.root = root
+        self.master = list()
         self.get_body_elem()
 
     def clean_tag(self, string):
@@ -33,6 +32,8 @@ class Parser():
                 tag = self.clean_tag(str(elem.tag))
                 if tag=='p':
                     if self.process_p(elem) is not None:
+                        t = " ".join(self.process_p(elem).split())
+                        self.master.append([t])
                         print("*************************************************PARABEGIN")
                         print(self.process_p(elem))
                         print("*************************************************PARAEND")
@@ -92,8 +93,10 @@ class Parser():
             if row_len == 1:
                 if len(frame) > 0 :
                     print(frame)
+                    self.master.append(frame)
                 frame = list()
                 print(self.read_row_as_list(row))
+                self.master.append(self.read_row_as_list(row))
             elif row_len  >  1:
                 try:
                     if pattern[i] == pattern[i+1] or pattern[i] == pattern[i-1]:
@@ -102,6 +105,7 @@ class Parser():
                             frame_item.append(self.process_cell(cell))
                         frame.append(frame_item)
                     else:
+                        self.master.append(self.read_row_as_list(row))
                         print(self.read_row_as_list(row))
                 except IndexError:
                     if pattern[i] == pattern[i-1]:
@@ -111,7 +115,9 @@ class Parser():
                         frame.append(frame_item)
                     else:
                         print(self.read_row_as_list(row))
+                        self.master.append(self.read_row_as_list(row))
         if len(frame) > 0 :
+            self.master.append(frame)
             print(frame)
 
     def read_row_as_list(self, row):
@@ -147,41 +153,3 @@ class Parser():
                 if self.process_p(p) is not None:
                     p_group.append(self.process_p(p))
         return self.join_p(p_group)
-
-if __name__ == '__main__':
-    i = 1
-    filename = str(i)+'.docx'
-    
-    # Validate input file
-    ext = os.path.splitext(filename)[-1].lower()
-    if ext != ".docx":
-        exit()
-
-    # Extract file initial name
-    name = os.path.splitext(os.path.basename(filename))[0]
-
-    # input Folder
-    input_base_dir = 'data/input_doc/'
-
-    # cache folder 
-    cache_path = 'cache/'+name+'.zip'
-
-    # Make temporary directory in cache folder
-    shutil.copy(input_base_dir+filename, cache_path)
-    with zipfile.ZipFile(cache_path,"r") as zip_ref:
-        zip_ref.extractall("cache/"+name)
-    if os.path.isfile(cache_path):
-        os.remove(cache_path)
-
-    # Locate the xml file to be parsed
-    doc_xml_path = 'cache/' + name + '/word/document.xml'
-
-    # Parse the XML
-    tree = etree.parse(doc_xml_path)
-    root = tree.getroot()
-    parser = Parser(root)
-    
-    # Save a pretty printed xml in the debugger directory
-    xmlstr = minidom.parseString(etree.tostring(tree)).toprettyxml(indent="   ")
-    with open("debugger/sample.xml", "w") as f:
-        f.write(xmlstr)
