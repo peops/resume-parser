@@ -3,6 +3,7 @@ import re
 import shutil
 import zipfile
 import itertools
+import pandas as pd
 from lxml import etree
 from xml.dom import minidom
 
@@ -26,21 +27,24 @@ class Parser():
         string = string.replace(dlte_str, "")
         return string
 
-    def get_body_elem(self, space= 1):
+    def get_body_elem(self):
         for body in self.root:
             for elem in body:
                 tag = self.clean_tag(str(elem.tag))
                 if tag=='p':
-                    self.process_p(elem)
+                    if self.process_p(elem) is not None:
+                        print("*************************************************PARABEGIN")
+                        print(self.process_p(elem))
+                        print("*************************************************PARAEND")
                 if tag=='tbl':
-                    print('****************************************************************************TABLEBEGIN')
+                    print("*************************************************TABLEBEGIN")
                     self.process_tbl(elem)
-                    print('****************************************************************************TABLEEND')
+                    print("*************************************************TABLEEND")
 
     def process_p(self, root):
-        p_text = self.get_p_text(root, space = 1)
+        p_text = self.get_p_text(root)
         p_text = self.join_p(p_text)
-        print(p_text)
+        return p_text
 
     def join_p(self, x):
         if isinstance(x, str):
@@ -58,14 +62,14 @@ class Parser():
             else:
                 return
 
-    def get_p_text(self, root, space = 1):
+    def get_p_text(self, root):
         text = list()
         for child in root:
             if child.text is not None:
                 text.append(child.text)
             if self.clean_tag(str(child.tag)) == "tab":
                 text.append(" ")
-            _text = self.get_p_text(child, space = space + 1)
+            _text = self.get_p_text(child)
             if len(_text) == 0:
                 pass
             else:
@@ -73,37 +77,47 @@ class Parser():
         return text
 
     def process_tbl(self, root):
-        pattern = list()
         rows = list()
-        for row in root:
-            tag = self.clean_tag(str(row.tag))
+        for elem in root:
+            tag = self.clean_tag(str(elem.tag))
             if tag=='tr':
-                n_cells, row = self.process_row(row, count = True)
-                pattern.append(n_cells)
-                rows.append(row)
-        # pattern = [1,6,6,6,6,6]
-        pattern_indices = self.pattern_indices(pattern)
-        # print(pattern_indices)
-        used_rows = list()
-        if len(pattern_indices)>1:
-            for i, _ in enumerate(pattern_indices):
-                if i == len(pattern_indices)-1:
-                    break
-                if pattern_indices[i+1]-pattern_indices[i] > 2:
-                    for x in range(pattern_indices[i], pattern_indices[i+1]):
-                        for cell in rows[x]:
-                            print("************CELL")
-                            self.process_cell(cell)
-                        print("**********************************ROW")
-                        used_rows.append(x)
-                    for index in sorted(used_rows, reverse=True):
-                        del rows[index]
+                row = self.process_row(elem)
+                if len(row) != 0:
+                    rows.append(row)
+        pattern = [len(row) for row in rows]
+        frame = list()
+        for i, (row_len, row) in enumerate(zip(pattern,rows)):
+            if row_len == 1:
+                if len(frame) > 0 :
+                    print(frame)
+                frame = list()
+                print(self.read_row_as_list(row))
+            elif row_len  >  1:
+                try:
+                    if pattern[i] == pattern[i+1] or pattern[i] == pattern[i-1]:
+                        frame_item = list()
+                        for cell in rows[i]:
+                            frame_item.append(self.process_cell(cell))
+                        frame.append(frame_item)
+                    else:
+                        print(self.read_row_as_list(row))
+                except IndexError:
+                    if pattern[i] == pattern[i-1]:
+                        frame_item = list()
+                        for cell in rows[i]:
+                            frame_item.append(self.process_cell(cell))
+                        frame.append(frame_item)
+                    else:
+                        print(self.read_row_as_list(row))
+        if len(frame) > 0 :
+            print(frame)
 
-        for remaining_row in rows:
-            print("**********************************ROW")
-            for cell in remaining_row:
-                print("************CELL")
-                self.process_cell(cell)
+    def read_row_as_list(self, row):
+        row_data = list() 
+        for cell in row:
+            if self.process_cell(cell) is not None:
+                row_data.append(self.process_cell(cell))
+        return row_data
 
     def pattern_indices(self, pattern):
         index_pattern = [0]
@@ -115,28 +129,25 @@ class Parser():
                 index_pattern.append(index)
         return index_pattern
 
-    def process_row(self, root, count):
-        n_cells = 0
+    def process_row(self, root):
         cells = list()
         for cell in root:
             tag = self.clean_tag(str(cell.tag))
             if tag=='tc':
-                n_cells += 1
                 cells.append(cell)
-                if count == False:
-                    print("************CELL")
-                    self.process_cell(cell)
-        return n_cells, cells
+        return cells
 
     def process_cell(self, root):
+        p_group = list()
         for p in root:
             tag = self.clean_tag(str(p.tag))
             if tag=='p':
-                self.process_p(p)
-
+                if self.process_p(p) is not None:
+                    p_group.append(self.process_p(p))
+        return self.join_p(p_group)
 
 if __name__ == '__main__':
-    i = 10
+    i = 1
     filename = str(i)+'.docx'
     
     # Validate input file
