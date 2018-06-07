@@ -9,6 +9,7 @@ class Parser():
     def __init__(self, root):
         self.root = root
         self.master = list()
+        self.temp = list()
         self.get_body_elem()
 
     def clean_tag(self, string):
@@ -55,13 +56,24 @@ class Parser():
                 if isinstance(x[0], list):
                     merge = lambda x: list(itertools.chain.from_iterable(x))
                     x = merge(x)
-                elif isinstance(x[0], str):
+                else:
+                    self.flatten_list(x)
+                    x = self.temp
+                    self.temp = list()
                     x = ''.join(x)
                 return self.join_p(x)
             elif len(x) == 1:
                 return self.join_p(x[0])
             else:
                 return
+
+    def flatten_list(self, x):
+        for elem in x:
+            if isinstance(elem, list):
+                self.flatten_list(elem)
+            if isinstance(elem, str):
+                self.temp.append(elem)
+        return
 
     def get_p_text(self, root):
         text = list()

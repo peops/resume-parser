@@ -6,7 +6,7 @@ from xml.dom import minidom
 from parsy.parser import Parser 
 
 
-i = 1
+i = 9
 filename = str(i)+'.docx'
 
 # Validate input file
@@ -21,12 +21,12 @@ name = os.path.splitext(os.path.basename(filename))[0]
 input_base_dir = 'data/input_doc/'
 
 # cache folder 
-cache_path = 'cache/'+name+'.zip'
+cache_path = 'cache/cv.zip'
 
 # Make temporary directory in cache folder
 shutil.copy(input_base_dir+filename, cache_path)
 with zipfile.ZipFile(cache_path,"r") as zip_ref:
-    zip_ref.extractall("cache/"+name)
+    zip_ref.extractall("cache/cv")
 if os.path.isfile(cache_path):
     os.remove(cache_path)
 
