@@ -31,7 +31,7 @@ if os.path.isfile(cache_path):
     os.remove(cache_path)
 
 # Locate the xml file to be parsed
-doc_xml_path = 'cache/' + name + '/word/document.xml'
+doc_xml_path = 'cache/cv/word/document.xml'
 
 # Parse the XML
 tree = etree.parse(doc_xml_path)
