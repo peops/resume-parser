@@ -37,7 +37,8 @@ def index(file):
     app.logger.info(file)
     Resume = ConnectFlask(file)
     print(Resume.parse())
-    return render_template('index.html')
+    lnames = ['HTML', 'CSS', 'JS', 'GO', 'Python']
+    return render_template('index.html', lnames=lnames, lemails=lnames, lphones=lnames, laddresses=lnames)
 
 
 if __name__ == "__main__":

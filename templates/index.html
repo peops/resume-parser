@@ -103,33 +103,42 @@
                                 <h4>Basic Information <span class="step">(Step 1 / 7)</span></h4>
                                 <div class="form-group">
                                     <label for="name">Name:</label><br>
-                                    <input type="text" name="name" class="name form-control" id="name" list="names">
+                                    <input type="text" name="name" class="name form-control" id="name" list="names" placeholder="{{ lnames[0] }}">
                                     <datalist id="names">
-                                        <option value="HTML">
-                                        <option value="CSS">
-                                        <option value="JavaScript">
-                                        <option value="Java">
-                                        <option value="Ruby">
-                                        <option value="PHP">
-                                        <option value="Go">
-                                        <option value="Erlang">
-                                        <option value="Python">
-                                        <option value="C">
-                                        <option value="C#">
-                                        <option value="C++">
+                                        {% for data in lnames %}
+                                            <option value="{{ data }}">
+                                        {% endfor %}
                                     </datalist>
                                 </div>
                                 <div class="form-group">
                                     <label for="email">E-mail ID:</label><br>
-                                    <input type="text" name="email" class="email form-control" id="email">
+                                    <input type="text" name="email" class="email form-control" id="email" list="emails"
+                                    placeholder="{{ lemails[0] }}">
+                                    <datalist id="emails">
+                                        {% for data in lemails %}
+                                            <option value="{{ data }}">
+                                        {% endfor %}
+                                    </datalist>
                                 </div>
                                 <div class="form-group">
                                     <label for="contact">Contact No:</label><br>
-                                    <input type="text" name="contact" class="contact form-control" id="contact">
+                                    <input type="text" name="contact" class="contact form-control" id="contact" list="phones"
+                                    placeholder="{{ lphones[0] }}">
+                                    <datalist id="phones">
+                                        {% for data in lphones %}
+                                            <option value="{{ data }}">
+                                        {% endfor %}
+                                    </datalist>
                                 </div>
                                 <div class="form-group">
                                     <label for="address">Address:</label><br>
-                                    <input type="text" name="address" class="address form-control" id="address">
+                                    <input type="text" name="address" class="address form-control" id="address" list="addresses"
+                                    placeholder="{{ laddresses[0] }}">
+                                    <datalist id="addresses">
+                                        {% for data in laddresses %}
+                                            <option value="{{ data }}">
+                                        {% endfor %}
+                                    </datalist>
                                 </div>
                                 <div class="form-group">
                                     <label for="birthdate">Date (YYYY/MM/DD):</label><br>
