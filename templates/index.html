@@ -97,13 +97,27 @@
                 <div class="row">
                     <div class="col-sm-12 msf-form">
                         
-                        <form role="form" action="" method="post" class="form-inline">
+                        <form role="form" action="" method="post" class="form-inline" autocomplete="off">
                             <!-- Basic Information Details--> 
                             <fieldset>
                                 <h4>Basic Information <span class="step">(Step 1 / 7)</span></h4>
                                 <div class="form-group">
                                     <label for="name">Name:</label><br>
-                                    <input type="text" name="name" class="name form-control" id="name">
+                                    <input type="text" name="name" class="name form-control" id="name" list="names">
+                                    <datalist id="names">
+                                        <option value="HTML">
+                                        <option value="CSS">
+                                        <option value="JavaScript">
+                                        <option value="Java">
+                                        <option value="Ruby">
+                                        <option value="PHP">
+                                        <option value="Go">
+                                        <option value="Erlang">
+                                        <option value="Python">
+                                        <option value="C">
+                                        <option value="C#">
+                                        <option value="C++">
+                                    </datalist>
                                 </div>
                                 <div class="form-group">
                                     <label for="email">E-mail ID:</label><br>
@@ -144,11 +158,9 @@
                                     </label>
                                 </div>
                                 <br>
-                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
-                            </fieldset>
                             
                             <!-- Educational Qualification Details--> 
-                            <fieldset>
+
                                 <h4>Educational Qualifications<span class="step">(Step 2 / 7)</span></h4>
                                 <!-- Qualification 1 -->
                                 <div class="well well-sm" style="background: rgba(122, 130, 136, 0.2)">
@@ -170,12 +182,9 @@
                                     </div>
                                 </div>
                                 <br>
-                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
-                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
-                            </fieldset>
                             
                             <!-- Previous Experiences --> 
-                            <fieldset>
+
                                 <h4>Experiences <span class="step">(Step 3 / 7)</span></h4>
                                 <div class="well well-sm" style="background: rgba(122, 130, 136, 0.2)">
                                     <div class="form-group">
@@ -200,11 +209,9 @@
                                     </div>
                                 </div>
                                 <br>
-                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
-                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
-                            </fieldset>
-                            
-                            <fieldset>
+
+                            <!-- About the candidate --> 
+
                                 <h4>About the Candidate<span class="step">(Step 4 / 7)</span></h4>
                                 <div class="form-group">
                                     <label for="personalbio">Candidate Persional Bio:</label><br>
@@ -215,11 +222,9 @@
                                     <textarea name="careergoals" class="careergoals form-control" id="careergoals"></textarea>
                                 </div>
                                 <br>
-                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
-                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
-                            </fieldset>
                             
-                            <fieldset>
+                            <!-- Other information --> 
+
                                 <h4>Other Information <span class="step">(Step 5 / 7)</span></h4>
                                 <div class="form-group">
                                     <label for="language">Language:</label><br>
@@ -250,11 +255,9 @@
                                     <input type="text" name="others" class="others form-control" id="others">
                                 </div>
                                 <br>
-                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
-                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
-                            </fieldset>
-                            
-                            <fieldset>
+
+                            <!-- Final Review --> 
+
                                 <h4>Final Review <span class="step">(Step 6 / 7)</span></h4>
                                 <div class="radio-buttons-1">
                                     <p>Rate Resume:</p>
@@ -297,17 +300,15 @@
                                     </select>
                                 </div>
                                 <br>
-                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
-                                <button type="button" class="btn btn-next">Next <i class="fa fa-angle-right"></i></button>
-                            </fieldset>
-                           <fieldset>
+
+                            <!-- Personal Remarks --> 
+
                                 <h4>Personal Remarks<span class="step">(Step 7 / 7)</span></h4>
                                 <div class="form-group">
                                     <label for="remarks">Remarks:</label><br>
                                     <textarea name="remarks" class="remarks form-control" id="remarks"></textarea>
                                 </div>
                                 <br>
-                                <button type="button" class="btn btn-previous"><i class="fa fa-angle-left"></i> Previous</button>
                                 <button type="submit" class="btn">Submit</button>
                             </fieldset> 
                             
@@ -325,7 +326,47 @@
         <script src="{{ url_for('static',filename="assets/bootstrap/js/bootstrap.min.js") }}"></script>
         <script src="{{ url_for('static',filename="assets/js/jquery.backstretch.min.js") }}"></script>
         <script src="{{ url_for('static',filename="assets/js/scripts.js") }}"></script>
-        
+        <script type="text/javascript">
+            // Get the <datalist> and <input> elements.
+            var dataList = document.getElementById('json-datalist');
+            var input = document.getElementById('ajax');
+
+            // Create a new XMLHttpRequest.
+            var request = new XMLHttpRequest();
+
+            // Handle state changes for the request.
+            request.onreadystatechange = function(response) {
+              if (request.readyState === 4) {
+                if (request.status === 200) {
+                  // Parse the JSON
+                  var jsonOptions = JSON.parse(request.responseText);
+              
+                  // Loop over the JSON array.
+                  jsonOptions.forEach(function(item) {
+                    // Create a new <option> element.
+                    var option = document.createElement('option');
+                    // Set the value using the item in the JSON array.
+                    option.value = item;
+                    // Add the <option> element to the <datalist>.
+                    dataList.appendChild(option);
+                  });
+                  
+                  // Update the placeholder text.
+                  input.placeholder = "e.g. datalist";
+                } else {
+                  // An error occured :(
+                  input.placeholder = "Couldn't load datalist options :(";
+                }
+              }
+            };
+
+            // Update the placeholder text.
+            input.placeholder = "Loading options...";
+
+            // Set up and make the request.
+            request.open('GET', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/4621/html-elements.json', true);
+            request.send();
+        </script>
         <!--[if lt IE 10]>
             <script src="assets/js/placeholder.js"></script>
         <![endif]-->
