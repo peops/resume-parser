@@ -12,6 +12,8 @@ from collections import OrderedDict
 class ConnectFlask():
     def __init__(self, filename):
         self.filename = filename
+        self.resume = []
+        self.parse()
 
     def parse(self):
         filename = self.filename
@@ -51,31 +53,46 @@ class ConnectFlask():
 
         # Parse file
         parser = Parser(root)
-        resume = parser.master
-
-        return resume
-
+        self.resume = dict(zip(range(0, len(parser.master)), parser.master))
         ###############################################################################
 
-        # config = 'config/default.json'
-        # with open(config) as f:
-        #     resume_config = json.load(f)
+    def map(self):
+        config = 'config/default.json'
+        with open(config) as f:
+            resume_config = json.load(f)
         
-        # def match(keywords, item):
-        #   for keyword in keywords:
-        #       if item[0].lower().find(keyword.lower()) != -1:
-        #           print(keyword, item)
+        blocks = OrderedDict()
+        for i, line in self.resume.items():
+            if len(line) == 1:
+                sec = self.identify_section(line, resume_config)
+                if sec is not None:
+                    blocks[i] = sec
+            else:
+                try:
+                    table = np.array(line)
+                    r, c = table.shape
+                    # self.pprint(table)
+                except ValueError:
+                    # print(line)
+                    pass
+        print(blocks)
+                      
+    def identify_section(self, line, resume_config):
+        for sec, subsec in resume_config.items():
+            keywords = subsec["HEADING"]
+            for keyword in keywords:
+                if line[0].lower().find(keyword.lower()) != -1:
+                    if len(line[0].split(" ")) < 5:
+                        return sec
 
-        # for line in resume:
-        #   if len(line) == 1:
-        #       for sec, subsec in resume_config.items():
-        #           for key, keywords in subsec.items():
-        #               match(keywords, line)
-        #               # print("******************************LINE")
-        #   else:
-        #       try:
-        #           r, c = np.array(line).shape
-        #           print("table")
-        #       except ValueError:
-        #           print("List of lists")
-        #           
+    def pprint(self, table):
+        import pandas as pd
+        df = pd.DataFrame(table)
+        print (df)
+
+
+# 9.docx has error
+Resume = ConnectFlask('1.docx')
+# for i, line in Resume.resume.items():
+#     print(line)
+Resume.map()
