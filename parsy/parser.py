@@ -166,4 +166,4 @@ class Parser():
             if tag=='p':
                 if self.process_p(p) is not None:
                     p_group.append(self.process_p(p))
-        return self.join_p(p_group)
+        return ' '.join(p_group)
