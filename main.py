@@ -54,7 +54,6 @@ class ConnectFlask():
         # Parse file
         parser = Parser(root)
         self.resume = dict(zip(range(0, len(parser.master)), parser.master))
-        ###############################################################################
 
     def map(self):
         config = 'config/default.json'
@@ -69,22 +68,20 @@ class ConnectFlask():
             #     for i in range(start+1, end+1):
             #         print(i, self.resume[i])
 
-            if sec == "EDUCATIONAL QUALIFICATIONS":
-                for i in range(start+1, end+1):
-                    line = self.resume[i]
-                    if len(line) == 1:
+            # if sec == "EDUCATIONAL QUALIFICATIONS":
+            for i in range(start+1, end+1):
+                line = self.resume[i]
+                if len(line) == 1:
+                    print(line)
+                else:
+                    try:
+                        table = np.array(line)
+                        r, c = table.shape
+                        self.pprint(table)
+                    except ValueError:
                         print(line)
-                    else:
-                        try:
-                            table = np.array(line)
-                            r, c = table.shape
-                            self.pprint(table)
-                        except ValueError:
-                            print(line)
-                            pass
+                        pass
 
-
-                      
     def identify_section(self, line, resume_config):
         for sec, subsec in resume_config.items():
             keywords = subsec["HEADING"]
@@ -121,9 +118,10 @@ class ConnectFlask():
         print (df)
 
 
-# 16, 25, 45 =====> CV cannot be parsed
-for i in range(1,47):
-    Resume = ConnectFlask(str(i) + '.docx')
-    # for i, line in Resume.resume.items(): 
-    #     print(i, line)
-    Resume.map()
+# # 16, 25, 45 =====> CV cannot be parsed
+# for i in range(1,10):
+#     Resume = ConnectFlask(str(i) + '.docx')
+#     # for i, line in Resume.resume.items(): 
+#     #     print(i, line)
+#     Resume.map()
+#     print("#############################################################3")
