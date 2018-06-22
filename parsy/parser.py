@@ -128,8 +128,10 @@ class Parser():
                     else:
                         # print(self.read_row_as_list(row))
                         self.master.append(self.read_row_as_list(row))
-        if len(frame) > 0 :
+        if len(frame) > 1 :
             self.master.append(frame)
+        if len(frame) == 1 : 
+            self.master.append(frame[0])
             # print(frame)
 
     def read_row_as_list(self, row):

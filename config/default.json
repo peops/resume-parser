@@ -54,5 +54,11 @@
 	},
 	"ACCOMLISHMENT": {
 		"HEADING": ["ACCOMLISH", "ACHIEVE", "AWARD", "HONOR"]
+	},
+	"PROJECT": {
+		"HEADING": ["PROJECT"]
+	},
+	"CONFERENCE": {
+		"HEADING": ["CONFERENCE"]
 	}
 }

@@ -61,27 +61,29 @@ class ConnectFlask():
         with open(config) as f:
             resume_config = json.load(f)
         
-        block_bounds = self.create_block_bounds(resume_config)
-        blocks = self.create_blocks(block_bounds)
+        blocks = self.create_blocks(resume_config)
+        if blocks is None:
+            return
         for (start, end), sec in blocks.items():
-            if sec == "EXPERIENCES":
-                for i in range(start, end+1):
-                    print(i, self.resume[i])
+            # if sec == "EXPERIENCES":
+            #     for i in range(start+1, end+1):
+            #         print(i, self.resume[i])
 
             if sec == "EDUCATIONAL QUALIFICATIONS":
-                for i in range(start, end+1):
-                    print(i, self.resume[i])
+                for i in range(start+1, end+1):
+                    line = self.resume[i]
+                    if len(line) == 1:
+                        print(line)
+                    else:
+                        try:
+                            table = np.array(line)
+                            r, c = table.shape
+                            self.pprint(table)
+                        except ValueError:
+                            print(line)
+                            pass
 
 
-        # print(blocks)
-            # else:
-            #     try:
-            #         table = np.array(line)
-            #         r, c = table.shape
-            #         # self.pprint(table)
-            #     except ValueError:
-            #         # print(i)
-            #         pass
                       
     def identify_section(self, line, resume_config):
         for sec, subsec in resume_config.items():
@@ -91,16 +93,18 @@ class ConnectFlask():
                     if len(line[0].split(" ")) < 5:
                         return sec
 
-    def create_block_bounds(self, resume_config):
+    def create_blocks(self, resume_config):
         block_bounds = OrderedDict()
         for i, line in self.resume.items():
             if len(line) == 1:
                 sec = self.identify_section(line, resume_config)
                 if sec is not None:
                     block_bounds[i] = sec
-        return block_bounds
 
-    def create_blocks(self, block_bounds):
+        if len(block_bounds) == 0 :
+            print("cannot Parse")
+            return
+
         blocks = OrderedDict()
         blocks[(0, list(block_bounds.keys())[0]-1)] = "BUFFER"
         for i, (k, sec) in enumerate(block_bounds.items()):
@@ -117,8 +121,9 @@ class ConnectFlask():
         print (df)
 
 
-# 9.docx has error
-Resume = ConnectFlask('1.docx')
-# for i, line in Resume.resume.items(): 
-#     print(i, line)
-Resume.map()
+# 16, 25, 45 =====> CV cannot be parsed
+for i in range(1,47):
+    Resume = ConnectFlask(str(i) + '.docx')
+    # for i, line in Resume.resume.items(): 
+    #     print(i, line)
+    Resume.map()
