@@ -81,7 +81,7 @@ class Parser():
             if self.clean_tag(str(child.tag)) == "align" or self.clean_tag(str(child.tag)) == "posOffset":
                 continue
             if child.text is not None:
-                text.append(child.text)
+                text.append(" "+child.text)
             if self.clean_tag(str(child.tag)) == "tab":
                 text.append(" ")
             _text = self.get_p_text(child)
