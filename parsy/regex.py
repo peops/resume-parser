@@ -12,4 +12,4 @@ year = re.compile(r"((19|20)\d\d)")
 
 phonenumber = re.compile(r"[\d]{10}")
 
-email = re.compile(r"\w+@\w+")
+email = re.compile(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", re.IGNORECASE)
