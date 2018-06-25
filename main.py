@@ -1,9 +1,11 @@
 import os
+import re
 import json
 import shutil
 import zipfile
 import  numpy as np
 from lxml import etree
+from parsy import regex
 from xml.dom import minidom
 from parsy.parser import Parser 
 from collections import OrderedDict
@@ -63,24 +65,24 @@ class ConnectFlask():
         blocks = self.create_blocks(resume_config)
         if blocks is None:
             return
+        # print(blocks)
         for (start, end), sec in blocks.items():
-            # if sec == "EXPERIENCES":
-            #     for i in range(start+1, end+1):
-            #         print(i, self.resume[i])
-
-            # if sec == "EDUCATIONAL QUALIFICATIONS":
-            for i in range(start+1, end+1):
-                line = self.resume[i]
-                if len(line) == 1:
-                    print(line)
-                else:
-                    try:
-                        table = np.array(line)
-                        r, c = table.shape
-                        self.pprint(table)
-                    except ValueError:
+            if sec == "EXPERIENCES":
+                for i in range(start+1, end+1):
+                    line = self.resume[i]
+                    if len(line) == 1:
+                        # pass
                         print(line)
-                        pass
+                        # print(self.check_dates(line[0]))
+                    else:
+                        try:
+                            table = np.array(line)
+                            r, c = table.shape
+                            self.pprint(table)
+                            # print(table.shape)
+                        except ValueError:
+                            print(line)
+                            # self.check_dates(line)
 
     def identify_section(self, line, resume_config):
         for sec, subsec in resume_config.items():
@@ -112,16 +114,38 @@ class ConnectFlask():
             blocks[(k, next_k-1)] = sec
         return blocks
 
+    def check_dates(self, line):
+        matches = list()
+        matches.extend(self._check_dates(regex.ddmmyyyy, line))
+        # matches.extend(self._check_dates(regex.mmddyyyy, line))
+        # matches.extend(self._check_dates(regex.yyyymmdd, line))
+        matches.extend(self._check_dates(regex.monthyearrange, line))
+        matches.extend(self._check_dates(regex.monthyear, line))
+        # matches.extend(self._check_dates(regex.year, line))
+        return matches
+
+    def check_email(self, line):
+        return re.findall(regex.email, line)
+
+    def check_phone(self, line):
+        return re.findall(regex.phonenumber, line)
+
+    def _check_dates(self, pattern, line):
+        matches = list()
+        m = re.findall(pattern, line)
+        for i in m:
+            matches.append(i[0])
+        return matches
+        
     def pprint(self, table):
         import pandas as pd
         df = pd.DataFrame(table)
         print (df)
 
-
-# # 16, 25, 45 =====> CV cannot be parsed
-# for i in range(1,10):
-#     Resume = ConnectFlask(str(i) + '.docx')
-#     # for i, line in Resume.resume.items(): 
-#     #     print(i, line)
-#     Resume.map()
-#     print("#############################################################3")
+# 16, 25, 45 =====> CV cannot be parsed
+for i in range(1,47):
+    Resume = ConnectFlask(str(i) + '.docx')
+    # for i, line in Resume.resume.items(): 
+    #     print(i, line)
+    Resume.map()
+    print("#############################################################3")
