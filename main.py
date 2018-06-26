@@ -3,6 +3,8 @@ import re
 import json
 import shutil
 import zipfile
+import sqlite3
+import contextlib
 import  numpy as np
 from lxml import etree
 from parsy import regex
@@ -67,7 +69,7 @@ class ConnectFlask():
             return
         # print(blocks)
         for (start, end), sec in blocks.items():
-            if sec == "EXPERIENCES":
+            if sec == "BUFFER" or sec == "BASIC INFORMATION":
                 for i in range(start+1, end+1):
                     line = self.resume[i]
                     if len(line) == 1:
@@ -136,6 +138,20 @@ class ConnectFlask():
         for i in m:
             matches.append(i[0])
         return matches
+
+    def check_name(self, name):
+        with sqlite3.connect("data/names/names.db") as conn:
+            conn.execute("PRAGMA busy_timeout = 30000")
+            conn.row_factory = sqlite3.Row
+            urls_to_exclude = set()
+
+            with contextlib.closing(conn.cursor()) as curs:
+                curs.execute("SELECT * FROM malenames WHERE name LIKE (?)", (name,))
+                curs.execute("SELECT * FROM femalenames WHERE name LIKE (?)", (name,))
+                curs.execute("SELECT * FROM surnames WHERE name LIKE (?)", (name,))
+                rows = curs.fetchall()
+                for row in rows:
+                    print (list(row))
         
     def pprint(self, table):
         import pandas as pd
@@ -143,9 +159,9 @@ class ConnectFlask():
         print (df)
 
 # 16, 25, 45 =====> CV cannot be parsed
-for i in range(1,47):
+for i in range(1,2):
     Resume = ConnectFlask(str(i) + '.docx')
     # for i, line in Resume.resume.items(): 
     #     print(i, line)
-    Resume.map()
+    # Resume.map()
     print("#############################################################3")
