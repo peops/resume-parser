@@ -69,22 +69,23 @@ class ConnectFlask():
             return
         # print(blocks)
         for (start, end), sec in blocks.items():
-            if sec == "BUFFER" or sec == "BASIC INFORMATION":
+            if sec == "EXPERIENCES":
                 for i in range(start+1, end+1):
                     line = self.resume[i]
                     if len(line) == 1:
-                        # pass
                         print(line)
-                        # print(self.check_dates(line[0]))
+                        dates = self.check_dates(line[0])
+                        if len(dates)>0:
+                            print("************", dates, "************")
                     else:
                         try:
                             table = np.array(line)
                             r, c = table.shape
                             self.pprint(table)
-                            # print(table.shape)
                         except ValueError:
+                            # pass
                             print(line)
-                            # self.check_dates(line)
+                            # print(self.check_dates(line))
 
     def identify_section(self, line, resume_config):
         for sec, subsec in resume_config.items():
@@ -117,12 +118,17 @@ class ConnectFlask():
         return blocks
 
     def check_dates(self, line):
+        spans = list()
         matches = list()
-        matches.extend(self._check_dates(regex.ddmmyyyy, line))
+        matches.extend(self._check_dates(regex.ddmmyyyy, line, spans))
         # matches.extend(self._check_dates(regex.mmddyyyy, line))
         # matches.extend(self._check_dates(regex.yyyymmdd, line))
-        matches.extend(self._check_dates(regex.monthyearrange, line))
-        matches.extend(self._check_dates(regex.monthyear, line))
+        matches.extend(self._check_dates(regex.monthyear1, line, spans))
+        matches.extend(self._check_dates(regex.monthyear2, line, spans))
+        matches.extend(self._check_dates(regex.monthdateyear, line, spans))
+        matches.extend(self._check_dates(regex.yearrange, line, spans))
+        matches.extend(self._check_dates(regex.year, line, spans))
+        matches.extend(self._check_dates(regex.literal, line, spans))
         # matches.extend(self._check_dates(regex.year, line))
         return matches
 
@@ -132,12 +138,29 @@ class ConnectFlask():
     def check_phone(self, line):
         return re.findall(regex.phonenumber, line)
 
-    def _check_dates(self, pattern, line):
+    def _check_dates(self, pattern, line, spans):
         matches = list()
-        m = re.findall(pattern, line)
+        m = re.finditer(pattern, line)
         for i in m:
-            matches.append(i[0])
+            if len(spans)>0:
+                _bool = self.check_inclusion(spans, i.span())
+                if _bool == True:
+                    continue
+                elif _bool == False:
+                    spans.append(i.span())
+                    matches.append(i.group())
+            else:
+                spans.append(i.span())
+                matches.append(i.group())
         return matches
+
+    def check_inclusion(self, spans, span_check):
+        for span in spans:
+            if span[0]<=span_check[1] and span[1]>=span_check[0]:
+                return True
+            else:
+                continue
+        return False
 
     def check_name(self, name):
         with sqlite3.connect("data/names/names.db") as conn:
@@ -158,10 +181,10 @@ class ConnectFlask():
         df = pd.DataFrame(table)
         print (df)
 
-# 16, 25, 45 =====> CV cannot be parsed
-for i in range(1,2):
+# 4, 
+for i in range(1,34):
     Resume = ConnectFlask(str(i) + '.docx')
     # for i, line in Resume.resume.items(): 
     #     print(i, line)
-    # Resume.map()
-    print("#############################################################3")
+    Resume.map()
+    print("#############################################################", i)
