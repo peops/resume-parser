@@ -17,6 +17,7 @@ class ConnectFlask():
     def __init__(self, filename):
         self.filename = filename
         self.resume = []
+        self.resume_json = {}
         self.parse()
 
     def parse(self):
@@ -68,24 +69,70 @@ class ConnectFlask():
         if blocks is None:
             return
         # print(blocks)
+
+        ###################################################################
         for (start, end), sec in blocks.items():
-            if sec == "EXPERIENCES":
-                for i in range(start+1, end+1):
+            if sec == "BUFFER" or sec == "BASIC INFORMATION":
+                self.resume_json['BASIC INFORMATION'] = dict()
+                for i in range(start, end+1):
                     line = self.resume[i]
                     if len(line) == 1:
-                        print(line)
-                        dates = self.check_dates(line[0])
-                        if len(dates)>0:
-                            print("************", dates, "************")
+                        self.check_basics(line)
                     else:
                         try:
                             table = np.array(line)
                             r, c = table.shape
-                            self.pprint(table)
+                            for row in table:
+                                for cell in row:
+                                    self.check_basics(cell)
+                            # self.pprint(table)
                         except ValueError:
-                            # pass
-                            print(line)
-                            # print(self.check_dates(line))
+                            for l in line:
+                                self.check_basics(l)
+
+        ###################################################################
+        for (start, end), sec in blocks.items():
+            # if sec == "EXPERIENCES":
+                self.resume_json['EXPERIENCES'] = dict()
+                for i in range(start+1, end+1):
+                    line = self.resume[i]
+                    if len(line) == 1:
+                        pass
+                        # print(line)
+                        # dates = self.check_dates(line[0])
+                        # if len(dates)>0:
+                        #     print("************", dates, "************")
+                    else:
+                        try:
+                            table = np.array(line)
+                            r, c = table.shape
+                            # for row in table:
+                            #     print (row)
+                            # self.pprint(table)
+                        except ValueError:
+                            pass
+                            # for l in line:
+                            #     dates = self.check_dates(l)
+                            #     print(dates)
+                            # print(line)
+        ###################################################################
+
+    def check_basics(self, line):
+        email = self.check_email(line[0])
+        phone = self.check_phone(line[0])
+        dates = self.check_dates(line[0])
+        names = self.check_name(line[0])
+        address = self.check_loc(line[0])
+        if len(email)>0:
+            self.resume_json['BASIC INFORMATION']['email'] = email
+        if len(phone)>0:
+            self.resume_json['BASIC INFORMATION']['phone'] = phone
+        if len(dates)>0:
+            self.resume_json['BASIC INFORMATION']['BIRTH'] = dates[0][0]
+        if len(names)>0:
+            self.resume_json['BASIC INFORMATION']['NAME'] = names
+        if len(address)>0:
+            self.resume_json['BASIC INFORMATION']['ADDRESS'] = address
 
     def identify_section(self, line, resume_config):
         for sec, subsec in resume_config.items():
@@ -148,10 +195,10 @@ class ConnectFlask():
                     continue
                 elif _bool == False:
                     spans.append(i.span())
-                    matches.append(i.group())
+                    matches.append([i.group(), i.span()])
             else:
                 spans.append(i.span())
-                matches.append(i.group())
+                matches.append([i.group(), i.span()])
         return matches
 
     def check_inclusion(self, spans, span_check):
@@ -162,20 +209,42 @@ class ConnectFlask():
                 continue
         return False
 
-    def check_name(self, name):
-        with sqlite3.connect("data/names/names.db") as conn:
+    def check_name(self, line):
+        words = line.split(' ')
+        names = []
+        with sqlite3.connect("config/database/database.db") as conn:
             conn.execute("PRAGMA busy_timeout = 30000")
             conn.row_factory = sqlite3.Row
-            urls_to_exclude = set()
-
             with contextlib.closing(conn.cursor()) as curs:
-                curs.execute("SELECT * FROM malenames WHERE name LIKE (?)", (name,))
-                curs.execute("SELECT * FROM femalenames WHERE name LIKE (?)", (name,))
-                curs.execute("SELECT * FROM surnames WHERE name LIKE (?)", (name,))
-                rows = curs.fetchall()
-                for row in rows:
-                    print (list(row))
-        
+                for word in words:
+                    curs.execute("SELECT * FROM malenames WHERE name LIKE (?)", (word,))
+                    rows = curs.fetchall()
+                    for row in rows:
+                        names.extend(list(row))
+                    curs.execute("SELECT * FROM femalenames WHERE name LIKE (?)", (word,))
+                    rows = curs.fetchall()
+                    for row in rows:
+                        names.extend(list(row))
+                    curs.execute("SELECT * FROM surnames WHERE name LIKE (?)", (word,))
+                    rows = curs.fetchall()
+                    for row in rows:
+                        names.extend(list(row))
+        return names
+
+    def check_loc(self, line):
+        words = line.split(' ')
+        addresses = []
+        with sqlite3.connect("config/database/database.db") as conn:
+            conn.execute("PRAGMA busy_timeout = 30000")
+            conn.row_factory = sqlite3.Row
+            with contextlib.closing(conn.cursor()) as curs:
+                for word in words:
+                    curs.execute("SELECT * FROM locations WHERE location LIKE (?)", (word,))
+                    rows = curs.fetchall()
+                    for row in rows:
+                        addresses.extend(list(row))
+        return addresses
+
     def pprint(self, table):
         import pandas as pd
         df = pd.DataFrame(table)
@@ -187,4 +256,5 @@ for i in range(1,34):
     # for i, line in Resume.resume.items(): 
     #     print(i, line)
     Resume.map()
+    # print(Resume.resume_json)
     print("#############################################################", i)

@@ -9,4 +9,4 @@ cache/
 *.docx#
 flask/
 debugger/
-data/
+/data/
