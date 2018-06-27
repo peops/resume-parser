@@ -8,6 +8,7 @@ import sqlite3
 malenames = "data/malenames.csv"
 femalenames = "data/femalenames.csv"
 surnames = "data/surnames.csv"
+locations = "data/location.csv"
 
 if not (os.path.exists(malenames) or os.path.exists(femalenames) or os.path.exists(surnames)):
     print('name database does not exist')
@@ -16,8 +17,9 @@ if not (os.path.exists(malenames) or os.path.exists(femalenames) or os.path.exis
 malenames = pd.read_csv(malenames)
 femalenames = pd.read_csv(femalenames)
 surnames = pd.read_csv(surnames)
+locations = pd.read_csv(locations)
 
-with sqlite3.connect("names.db") as conn:
+with sqlite3.connect("database.db") as conn:
     conn.execute("PRAGMA busy_timeout = 30000")
     conn.row_factory = sqlite3.Row
     urls_to_exclude = set()
@@ -29,5 +31,7 @@ with sqlite3.connect("names.db") as conn:
             curs.execute("INSERT INTO femalenames VALUES (?)", (row[0],))
         for i, row in surnames.iterrows():
             curs.execute("INSERT INTO surnames VALUES (?)", (row[0],))
+        for i, row in locations.iterrows():
+            curs.execute("INSERT INTO locations VALUES (?)", (row[0],))
 
 print("Populated DB")
